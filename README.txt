@@ -21,3 +21,5 @@ Added ability to add image to tool tip ( [optional] )
 [02] <img src='image/path.png' height='50' width='50' [alt=''] />
 
 Changed br tags to current iteration. Use <br /> in lieu of <br>
+
+Changed default chart file location  from ../../data-files/[filename].txt TO data-files/[filename].txt
