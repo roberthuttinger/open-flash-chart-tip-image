@@ -1,4 +1,4 @@
-﻿package charts.series.pies {
+package charts.series.pies {
 	
 	import string.Utils;
 	import charts.series.has_tooltip;
@@ -60,6 +60,10 @@
 		
 		public function get_tip_pos():Object {
 			return ( this.parent as has_tooltip ).get_tip_pos();
+		}
+		
+		public function get_image_url():String {
+			return (this.parent as has_tooltip ).get_image_url();
 		}
 		
 		public function set_tip( b:Boolean ):void {
