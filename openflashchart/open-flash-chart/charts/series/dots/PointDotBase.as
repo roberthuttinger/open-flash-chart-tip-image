@@ -1,4 +1,4 @@
-﻿package charts.series.dots {
+package charts.series.dots {
 	
 	import flash.display.Sprite;
 	import charts.series.Element;
@@ -19,7 +19,7 @@
 		
 		public function PointDotBase( index:Number, props:Properties ) {
 			
-			super();
+			super(index, props);
 			this.is_tip = false;
 			this.visible = true;
 			this.on_show_animate = true;
