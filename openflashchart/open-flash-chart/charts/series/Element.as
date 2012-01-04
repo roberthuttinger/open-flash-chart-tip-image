@@ -1,4 +1,4 @@
-﻿package charts.series {
+package charts.series {
 	
 	import charts.series.has_tooltip;
 	import flash.display.Bitmap;
@@ -27,25 +27,18 @@
 		protected var tooltip:String;
 		private var link:String;
 		public var is_tip:Boolean;
+		protected var image:String;
 		
 		public var line_mask:Sprite;
 		protected var right_axis:Boolean;
 		
-		private var has_tooltip_image:Boolean;
-		private var tt_updated_text:String;
-		private var tt_image_width:Number;
-		private var tt_image_height:Number;
-		private var tt_image_name:String;
-		private var myLoader:Loader;
-		private var tt_image:Bitmap;
-		private var max_image_size:Number = 200;
-		
-		public function Element()
+		public function Element(index:Number, props:Properties)
 		{
 			// elements don't change shape much, so lets
 			// cache it
 			this.cacheAsBitmap = true;
-			this.right_axis = false;	
+			this.right_axis = false;
+			this.image = props.get('image');
 		}
 		
 		public function resize( sc:ScreenCoordsBase ):void {
@@ -159,6 +152,10 @@
 		public function get_tooltip():String {
 			return this.tooltip;
 		}
+		
+		public function get_image_url():String {
+			return this.image;
+		}
 
 		/**
 		 * Replace #x_label# with the label. This is called
@@ -169,47 +166,6 @@
 		public function tooltip_replace_labels( labels:XAxisLabels ):void {
 			
 			this.tooltip = this.tooltip.replace('#x_label#', labels.get( this._x ) );
-			
-			tt_updated_text = this.tooltip;
-			if (tt_updated_text.indexOf("#img:") != -1) { 
-				var pattern:RegExp = /#img:(.*)#/ig; 
-				var fooBar1:Array = pattern.exec(tt_updated_text);
-				tt_image_name = fooBar1[1];
-				loadImage(tt_image_name);
-			}
-			
-		}
-	
-		private function loadImage(imageURL:String):void {
-			myLoader = new Loader();
-			myLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, imageHandler, false, 0, true);
-			myLoader.load(new URLRequest(imageURL));
-		}
-
-		private function imageHandler(evt:Event):void {
-			tt_image = Bitmap(myLoader.content);
-			imageResize(tt_image.height, tt_image.width);
-			tt_updated_text = tt_updated_text.replace(/#img:(.*)#/ig, "");
-			tt_updated_text = tt_updated_text + "<img src='" + tt_image_name + "' height='" + tt_image_height + "' width='" + tt_image_width + "' alt='' />";
-			this.tooltip = tt_updated_text;
-		}
-		
-		private function imageResize(height:Number, width:Number):void {
-			var variable:Number;
-			if (height > max_image_size || width > max_image_size) {
-				if (height > width) {
-					variable = (max_image_size / height);
-					tt_image_height = int(variable * height);
-					tt_image_width = int(variable * width);
-				} else {
-					variable = (max_image_size / width);
-					tt_image_height = int(variable * height);
-					tt_image_width = int(variable * width);
-				}
-			} else {
-				tt_image_height = height;
-				tt_image_width = width;
-			}
 		}
 		
 		/**
