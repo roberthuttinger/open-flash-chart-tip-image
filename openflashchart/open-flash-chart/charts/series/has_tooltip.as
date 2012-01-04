@@ -1,4 +1,4 @@
-﻿package charts.series {
+package charts.series {
 	
 	/**
 	 * anything that wants to use our tooltips
@@ -16,5 +16,7 @@
 		// if false the item should go
 		// back to the ground state. Not hovered.
 		function set_tip( b:Boolean ):void;
+		
+		function get_image_url():String;
 	}
 }
