@@ -1,4 +1,4 @@
-﻿package charts.series.pies {
+package charts.series.pies {
 	
 	import charts.series.Element;
 	import flash.events.Event;
@@ -43,8 +43,8 @@
 			// value.set('label', this.replace_magic_values( value.get('label') ) );
 			
 			
-			tr.aces( 'pie', value.get('animate') );
-			
+			//tr.aces( 'pie', value.get('animate') );
+			super(index, value);
 			this.pieSlice = new PieSlice( index, value );
 			this.addChild( this.pieSlice );
 			var textlabel:String = value.get('label');

@@ -1,4 +1,4 @@
-﻿package charts {
+package charts {
 	import charts.series.pies.PieLabel;
 	import flash.external.ExternalInterface;
 	import string.Utils;
@@ -155,7 +155,7 @@
 			if (isNaN(radius)){
 				radius = ( Math.min( sc.width, sc.height ) / 2.0 );
 				var offsets:Object = {top:0, right:0, bottom:0, left:0};
-				trace("sc.width, sc.height, radius", sc.width, sc.height, radius);
+				//trace("sc.width, sc.height, radius", sc.width, sc.height, radius);
 
 				var i:Number;
 				var sliceContainer:PieSliceContainer;

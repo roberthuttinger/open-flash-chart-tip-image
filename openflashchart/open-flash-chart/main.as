@@ -52,6 +52,7 @@ package  {
 	import elements.labels.YLegendBase;
 	import elements.labels.YLegendLeft;
 	import elements.labels.YLegendRight;
+	import org.flashdevelop.utils.FlashConnect;
 	
 	
 	public class main extends Sprite {
@@ -81,6 +82,7 @@ package  {
 	
 		
 		public function main() {
+			
 			this.chart_parameters = LoaderInfo(this.loaderInfo).parameters;
 			if( this.chart_parameters['loading'] == null )
 				this.chart_parameters['loading'] = 'Loading data...';
@@ -95,7 +97,7 @@ package  {
 			{
 				// no data found -- debug mode?
 				try {
-					var file:String = "data-files/y-axis-auto-steps.txt";
+					var file:String = "y-axis-auto-steps.txt";
 					this.load_external_file( file );
 
 					/*
@@ -505,8 +507,8 @@ package  {
 		}
 		
 		private function activateHandler(event:Event):void {
-            tr.aces("activateHandler:", event);
-			tr.aces("stage", this.stage);
+            //tr.aces("activateHandler:", event);
+			//tr.aces("stage", this.stage);
         }
 
         private function resizeHandler(event:Event):void {
@@ -712,9 +714,9 @@ package  {
 		
 		private function build_chart( json:Object ):void {
 			
-			tr.ace('----');
-			tr.ace(JSON.serialize(json));
-			tr.ace('----');
+			//tr.ace('----');
+			//tr.ace(JSON.serialize(json));
+			//tr.ace('----');
 			
 			if ( this.obs != null )
 				this.die();

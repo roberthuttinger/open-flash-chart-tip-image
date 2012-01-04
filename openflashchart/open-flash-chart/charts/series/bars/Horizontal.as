@@ -1,4 +1,4 @@
-﻿package charts.series.bars {
+package charts.series.bars {
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -19,7 +19,7 @@
 		
 		public function Horizontal( index:Number, style:Object, group:Number )
 		{
-			super();
+			super(index, style as Properties);
 			//
 			// we use the index of this bar to find its Y position
 			//
