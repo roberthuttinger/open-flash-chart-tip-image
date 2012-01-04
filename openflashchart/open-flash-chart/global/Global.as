@@ -28,9 +28,9 @@ package global {
 			
 			// PIE charts don't have X Labels
 			
-			tr.ace('xxx');
-			tr.ace( this.x_labels == null )
-			tr.ace(pos);
+			//tr.ace('xxx');
+			//tr.ace( this.x_labels == null )
+			//tr.ace(pos);
 //			tr.ace( this.x_labels.get(pos))
 			
 			
@@ -50,9 +50,9 @@ package global {
 		}
 		
 		public function set_tooltip_string( s:String ):void {
-			tr.ace('@@@@@@@');
-			tr.ace(s);
-			this.tooltip = s;
+			//tr.ace('@@@@@@@');
+			//tr.ace(s);
+			//this.tooltip = s;
 		}
 		
 		public function get_tooltip_string():String {

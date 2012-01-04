@@ -1,4 +1,4 @@
-﻿package charts.series.pies {
+package charts.series.pies {
 
 	public class DefaultPieProperties extends Properties
 	{
@@ -25,7 +25,7 @@
 				
 			super( json, parent );
 			
-			tr.aces('4', this.get('start-angle'));
+			//tr.aces('4', this.get('start-angle'));
 			// tr.aces('4', this.get('colour'));
 			// tr.aces('4', this.get('type'));
 		}

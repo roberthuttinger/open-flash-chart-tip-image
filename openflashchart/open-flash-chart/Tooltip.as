@@ -29,10 +29,8 @@ package {
 		
 		public var tip_text:String;
 		
-		public var has_tooltip_image:Boolean;
-		public var tt_image_width:Number;
-		public var tt_image_height:Number;
-		public var tt_image_name:String;
+		public var image_loaded:Boolean = false;
+		public var imageLoader:Loader;
 		
 		public static const CLOSEST:Number = 0;
 		public static const PROXIMITY:Number = 1;
@@ -90,67 +88,105 @@ package {
 		public function make_tip( elements:Array ):void {
 			
 			this.graphics.clear();
+			if (imageLoader) {
+				imageLoader.unload();
+			}
 			
 			while( this.numChildren > 0 )
 				this.removeChildAt(0);
+			
+			imageLoader = new Loader();
 
 			var height:Number = 0;
 			var x:Number = 5;
+			var width:Number = 0;
 			
-			for each ( var e:has_tooltip in elements ) {
+			/*for each ( var e:has_tooltip in elements ) {
 				var o:Object = this.make_one_tip(e, x);
 				height = Math.max(height, o.height);
 				x += o.width + 2;
+			}*/
+			
+			var source:String = "", top:Number = 5, subTop:Number = 5;
+			
+			for (var i:Number = 0; i < elements.length; i++) {
+				var e:has_tooltip = elements[i];
+				source += e.get_tooltip();
 			}
 			
-			this.graphics.lineStyle(this.style.stroke, this.style.colour, 1);
-			this.graphics.beginFill(this.style.background, 1);
+			source = source.replace(/\s?<br\s?\/?>\s?/g, '##BREAK##');
+			var lines:Array = source.split( '##BREAK##' );
 			
-			if (has_tooltip_image) {
-				var largerScalesWidth:Number = Math.max((width+10),(tt_image_width + 20));
-				var largerScalesHeight:Number = Math.max((height+5),(tt_image_height + 40));
-				this.graphics.drawRoundRect(
-				0,0,
-				largerScalesWidth, largerScalesHeight,
-				this.style.rounded, this.style.rounded );
-			} else {
-				this.graphics.drawRoundRect(
-				0,0,
-				width+10, height + 5,
-				this.style.rounded, this.style.rounded );
+			if (lines.length > 1) {
+				var title:TextField = this.make_title(lines.shift());
+				title.mouseEnabled = false;
+				title.x = x;
+				title.y = top;
+				top += title.height;
+				subTop = top;
+				width = Math.max( width, title.width );
+				height += title.height;
+				this.addChild( title );
 			}
-
+			
+			if (lines.length) {
+				var text:TextField = this.make_body(lines.join( '\n' ));
+				text.mouseEnabled = false;
+				text.x = x;
+				text.y = top;
+				width = Math.max( width, text.width );
+				height += text.height;
+				this.addChild( text );
+				top += text.height;
+			}
+			
+			var self:Tooltip = this;
+			var drawBackdrop:Function = function(h:Number, w:Number):void {
+				self.graphics.lineStyle(self.style.stroke, self.style.colour, 1);
+				self.graphics.beginFill(self.style.background, 1);
+				self.graphics.drawRoundRect(0, 0, width+10, height + 5, self.style.rounded, self.style.rounded );
+			}
+			
+			var imageURL:String = e.get_image_url();			
+			if (imageURL) {
+				var imageLoaded:Function = function(e:Event):void {
+					var maximum:Number = 200;
+					if (imageLoader.width > maximum) {
+						imageLoader.height = maximum / imageLoader.width * imageLoader.height;
+						imageLoader.width = maximum;
+					}
+					if (imageLoader.height > maximum) {
+						imageLoader.width = maximum / imageLoader.height * imageLoader.width;
+						imageLoader.height = maximum;
+					}
+					self.addChild(imageLoader);
+					imageLoader.x = x;
+					imageLoader.y = subTop;
+					if (text) {
+						text.y = subTop + imageLoader.height;
+					}
+					height += imageLoader.height;
+					width = Math.max(width, imageLoader.width);
+					drawBackdrop(height, width);
+				}
+				
+				imageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, imageLoaded, false, 0, true);
+				imageLoader.load(new URLRequest(imageURL));
+			}
+			
+			drawBackdrop(height, width);
+			
 		}
 			
 		private function make_one_tip( e:has_tooltip, x:Number ):Object {
 			
-			has_tooltip_image = false;
+			image_loaded = false;
 			
 			var tt:String = e.get_tooltip();
-			if (tt.indexOf("<img") != -1) { 
-				has_tooltip_image = true;
-				if (tt.indexOf(" width=") != -1) {
-					var fooBar:Array = tt.match(/width='(\d+)'/g);
-					tt_image_width = parseInt(fooBar[0].match(/(\d+)/g));
-				} else {
-					tt_image_width = 0;
-					has_tooltip_image = false;
-				}
-				if (tt.indexOf(" height=") != -1) {
-					var fooBar2:Array = tt.match(/height='(\d+)'/g);
-					tt_image_height = parseInt(fooBar2[0].match(/(\d+)/g));
-				} else {
-					tt_image_height = 0;
-					has_tooltip_image = false;
-				}
-			}
-			if (has_tooltip_image == false) {
-				tt = tt.replace(/(<img[^>]+>)/i, "");
-				tt_image_width = 0;
-				tt_image_height = 0;
-			}
 			
-			var lines:Array = tt.split( '<br />' );
+			tt.replace(/<br\s?\/?>/g, '##BREAK##');
+			trace(tt);
+			var lines:Array = tt.split( '##BREAK##' );
 			
 			var top:Number = 5;
 			var width:Number = 0;
@@ -161,7 +197,7 @@ package {
 				title.x = x;
 				title.y = top;
 				top += title.height;
-				width = Math.max( width, title.width, tt_image_width );
+				width = Math.max( width, title.width );
 				this.addChild( title );
 			}
 			
@@ -169,7 +205,7 @@ package {
 			text.mouseEnabled = false;
 			text.x = x;
 			text.y = top;
-			width = Math.max( width, text.width, tt_image_width );
+			width = Math.max( width, text.width);
 			this.addChild( text );
 			top += text.height;
 			return {width:width, height:top};
@@ -180,7 +216,6 @@ package {
 			var title:TextField = new TextField();
 			title.mouseEnabled = false;
 			
-			title.htmlText =  text;
 			/*
 			 * 
 			 * Start thinking about just using html formatting 
@@ -196,18 +231,13 @@ package {
 			fmt.bold = (this.style.title.font_weight=="bold");
 			fmt.size = this.style.title.font_size;
 			fmt.align = "center";
-			title.setTextFormat(fmt);
+			title.defaultTextFormat = fmt;
 			title.multiline = true;
 			title.wordWrap = true;
-			if (has_tooltip_image) {
-				title.width = tt_image_width;
-				title.height = tt_image_height;
-				title.autoSize = "left";
-			} else {
-				title.width = (text.length * 6) + 12;
-				title.height = 10;
-				title.autoSize = "left";
-			}
+			//title.width = (text.length * 6) + 12;
+			//title.height = 10;
+			title.autoSize = "left";
+			title.htmlText = text;
 			
 			return title;
 		}			
@@ -227,15 +257,9 @@ package {
 			text.setTextFormat(fmt2);
 			text.multiline = true;
 			text.wordWrap = true;
-			if (has_tooltip_image) {
-				text.width = tt_image_width;
-				text.height = tt_image_height;
-				text.autoSize="left";
-			} else {
-				text.width = (text.length * 6) + 12;
-				text.height = 10;
-				text.autoSize="left";
-			}
+			text.width = (text.length * 6) + 12;
+			text.height = 10;
+			text.autoSize = "left";
 			
 			return text;
 		}
@@ -259,7 +283,6 @@ package {
 		}
 		
 		private function show_tip( e:has_tooltip ):void {
-			
 			// remove the 'hide' tween
 			Tweener.removeTweens( this );
 			var p:flash.geom.Point = this.get_pos( e );
@@ -305,7 +328,6 @@ package {
 			}
 			else
 			{
-
 				// this is a new tooltip, tell
 				// the old highlighted item to
 				// return to ground state

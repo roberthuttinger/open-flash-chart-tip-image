@@ -1,4 +1,4 @@
-﻿package charts.series.bars {
+package charts.series.bars {
 
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -24,7 +24,7 @@
 		
 		public function Base( index:Number, props:Properties, group:Number )
 		{
-			super();
+			super(index, props);
 			this.index = index;
 			this.parse_value(props);
 			this.colour = props.get_colour('colour');
