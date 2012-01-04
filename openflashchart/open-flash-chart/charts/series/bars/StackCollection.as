@@ -1,4 +1,4 @@
-﻿package charts.series.bars {
+package charts.series.bars {
 	
 	import charts.series.Element;
 	import flash.display.Sprite;
@@ -16,6 +16,8 @@
 		private var total:Number;
 		
 		public function StackCollection( index:Number, props:Properties, group:Number ) {
+			
+			super(index, props);
 			
 			//this.tooltip = this.replace_magic_values( props.get('tip') );
 			this.tooltip = props.get('tip');
